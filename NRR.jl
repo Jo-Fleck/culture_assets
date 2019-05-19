@@ -12,6 +12,9 @@ using Plots, Plots.PlotMeasures, StatsPlots; gr()
 file_in_NRR = "/Users/main/OneDrive - Istituto Universitario Europeo/data/OECD_NRR/NRR_16052019011132558.csv";
 graphNRR_fam_out = "/Users/main/Documents/Dropbox/!!EUI/Research/Culture_Assets/Insurance_policies/NRR_fam_2014.pdf";
 graphNRR_single_out = "/Users/main/Documents/Dropbox/!!EUI/Research/Culture_Assets/Insurance_policies/NRR_single_2014.pdf";
+dataNRR_fam_out = "/Users/main/Documents/Dropbox/!!EUI/Research/Culture_Assets/Insurance_policies/NRR_fam_2014.csv";
+dataNRR_single_out = "/Users/main/Documents/Dropbox/!!EUI/Research/Culture_Assets/Insurance_policies/NRR_single_2014.csv";
+
 
 df = DataFrame(CSV.read(file_in_NRR; typemap=Dict(Union{Missing, Int64} => Int64, Union{Missing, String} => String)))
 
@@ -107,3 +110,7 @@ tickfont=font(8),
 left_margin = 2mm,
 bottom_margin = 2mm)
 savefig(graphNRR_single_out)
+
+# Save data
+CSV.write(dataNRR_fam_out, df_fam_plot)
+CSV.write(dataNRR_single_out, df_single_plot)
