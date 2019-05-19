@@ -33,8 +33,10 @@ sort!(df_plot, Symbol("female"))
 # Plot
 
 @df df_plot groupedbar(:Country, cols(2:size(df_plot,2)),
-ylabel = "net pension entitlement divided by net pre-retirement earnings",
+ylabel = "pension entitlement / pre retirement earnings",
 title = "Net Pension Replacement Rates for average wage earners, 2014",
+titlefont=font(12),
+yaxis=font(9),
 legend = :topleft,
 background_color_legend = false,
 bar_width = 0.67,
@@ -49,7 +51,7 @@ xgrid = false,
 fg_legend = :transparent,
 tickfont=font(8),
 left_margin = 2mm,
-bottom_margin = 2mm)
+bottom_margin = 0mm)
 savefig(graphNPRR_out)
 
 CSV.write(dataNPRR_out, df_plot)
