@@ -109,3 +109,46 @@ annotation(figure1,'textbox', [0.77 0.31 0.12 0.09], ...
 annotation(figure1,'textbox',[0.30 0.78 0.11 0.07],...
 'String',{'No','Insurance'},'LineStyle','none','FontSize',14,...
 'FontName','Helvetica Neue','FitBoxToText','off');
+
+
+%% Private Trust
+
+theta = 4.4;
+
+% Iterate over omega: 1:0.001:1/alpha
+
+omega_grid = 1:0.0001:1/alpha;
+priv_pi_x1 = nan(1,numel(omega_grid));
+priv_pi_x2 = nan(1,numel(omega_grid));
+
+for i = 1:numel(omega_grid)
+    l_omega = omega_grid(i);
+    
+    priv_pi_a = 3;
+    priv_pi_b = y1*( ((5/2)*alpha*(1+l_omega*alpha - ((l_omega - 1)/y1)*theta))/(1+z_rA*rA) - (alpha^2)/(1+rA) - 1 );
+    priv_pi_c = y1^2*(alpha/2)*(1/(1+z_rA*rA))*( (4*(alpha^2*l_omega - (l_omega - 1)*(theta/y1)))/(1+z_rA*rA) - (alpha^2*(1+l_omega*alpha))/(1+rA) - (1+l_omega*alpha) - ((l_omega - 1)*theta / (y1*alpha)) - (alpha * theta * (l_omega - 1)/(y1*(1+rA))));
+    
+    priv_pi_x = roots( [priv_pi_a priv_pi_b priv_pi_c] );
+    priv_pi_x1(i) = priv_pi_x(1);
+    priv_pi_x2(i) = priv_pi_x(2);
+    
+end
+
+figure1 = figure;
+axes1 = axes('Parent',figure1);
+hold(axes1,'on');
+plot(omega_grid, priv_pi_x2,'k','LineWidth',2)
+plot(omega_grid, pi_x2,'k','LineWidth',2)
+ylabel('{\boldmath$a_1^*$}','FontSize',17,'Interpreter','latex');
+xlabel('{\boldmath$\omega$}','FontSize',17,'Interpreter','latex');
+title('Stochastic Endowment: Optimal Liquid Asset Choice for Different Trust');
+
+box(axes1,'on');
+annotation(figure1,'arrow',[0.85 0.90],[0.30 0.13],'LineWidth',1);
+annotation(figure1,'arrow',[0.29 0.14],[0.82 0.88],'LineWidth',1);
+annotation(figure1,'textbox', [0.77 0.31 0.12 0.09], ...
+'String',{'Full','Insurance'},'LineStyle','none','FontSize',14,...
+'FontName','Helvetica Neue','FitBoxToText','off');
+annotation(figure1,'textbox',[0.30 0.78 0.11 0.07],...
+'String',{'No','Insurance'},'LineStyle','none','FontSize',14,...
+'FontName','Helvetica Neue','FitBoxToText','off');
