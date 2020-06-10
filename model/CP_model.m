@@ -24,7 +24,7 @@ int2 = 1+rA;
 check_int = int2-int1 % Needs to be positive
 
 
-%% Deterministic case
+%% Deterministic case: endowment evolution and consumption allocation
 
 a_1_star_det = 1/3 * y1 * (1 - (2*alpha/(1+ra)) + (alpha^2/(1+rA)) );
 A_star_det =   1/3 * y1 * (1 + (alpha/(1+ra))   - ((2*alpha^2)/(1+rA)) );
@@ -63,7 +63,10 @@ ylabel('y','FontSize',14)
 legend('Deterministic','Good State','Bad State','FontSize',12)
 xticks([1 2 3])
 
-% 1. Full insurance (qe coefficients as written in tex file)
+
+%% Public Trust
+
+% 1. Full insurance: omega = 1/alpha (qe coefficients as written in tex file)
 
 fi_a = 3;
 fi_b = y1*( (5*alpha)/(1+z_rA*rA) - (alpha^2)/(1+rA) - 1 );
