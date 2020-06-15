@@ -113,8 +113,8 @@ annotation(figure1,'textbox',[0.30 0.78 0.11 0.07],...
 
 %% Private Trust
 
-theta = 4.4;
-
+%theta = 4.4;
+theta = y1 * alpha^2
 % Iterate over omega: 1:0.001:1/alpha
 
 omega_grid = 1:0.0001:1/alpha;
@@ -152,3 +152,80 @@ annotation(figure1,'textbox', [0.77 0.31 0.12 0.09], ...
 annotation(figure1,'textbox',[0.30 0.78 0.11 0.07],...
 'String',{'No','Insurance'},'LineStyle','none','FontSize',14,...
 'FontName','Helvetica Neue','FitBoxToText','off');
+
+%% Guiso Model
+% set interest rates for rr,rnr
+rr = 0.07;
+rnr = 0.02;
+
+% set grid (no solution for omega=1)
+omega_grid = 1.0001:0.0001:1/alpha;
+priv_guiso_pi_arr = nan(1,numel(omega_grid));
+priv_guiso_pi_arr_a1 = nan(1,numel(omega_grid));
+
+for i = 1:numel(omega_grid)
+    l_omega = omega_grid(i);
+    q= 1/((1/alpha)-1)*(l_omega-1);
+    
+% find solution for a1
+    pi_a = 3;
+    pi_b = y1*( ((5/2)*alpha*(1+l_omega*alpha))/(1+z_rA*rA) - (alpha^2)/(1+rA) - 1 );
+    pi_c = y1^2*(alpha/2)*(1/(1+z_rA*rA))*( (4*alpha^2*l_omega)/(1+z_rA*rA) - (alpha^2*(1+l_omega*alpha))/(1+rA) - (1+l_omega*alpha) );
+    
+    pi_x = roots( [pi_a pi_b pi_c] );
+    pi_x1(i) = pi_x(1);
+    pi_x2(i) = pi_x(2);
+    
+% Use fmincon
+% solve for arr =x1 and anr = x2 with the condition that both have to be positive and x1+x2=a1
+% solve arr
+    %help1 = pG/(alpha * y1 + x(1)*q*(1+rr) + x(2)*(1+rnr) - (l_omega - 1)* theta);
+    %help2 = pB/(l_omega * alpha^2 * y1 + x(1)*q*(1+rr) + x(2)*(1+rnr));
+    %help3 = 1/(q*(1+rr)*(1/2)*(y1 - ((alpha^2 * y1)/(1+rA)) - x(1) - x(2)));
+    
+    %g= help1 + help2 - help3;
+    
+ % solve anr
+    %help1 = pG/(alpha * y1 + x(1)*q*(1+rr) + x(2)*(1+rnr) - (l_omega - 1)* theta);
+    %help2 = pB/(l_omega * alpha^2 * y1 + x(1)*q*(1+rr) + x(2)*(1+rnr));
+    %help3 = 1/((1+rnr)*(1/2)*(y1 - ((alpha^2 * y1)/(1+rA)) - x(1) - x(2)));
+    
+    %f= help1 + help2 - help3;
+    
+ % use g:
+fun = @(x)pG/(alpha * y1 + x(1)*q*(1+rr) + x(2)*(1+rnr) - (l_omega - 1)* theta) + pB/(l_omega * alpha^2 * y1 + x(1)*q*(1+rr) + x(2)*(1+rnr)) - (1/(q*(1+rr)*(1/2)*(y1 - ((alpha^2 * y1)/(1+rA)) - x(1) - x(2)))); 
+
+% use f: same results
+%fun = @(x)pG/(alpha * y1 + x(1)*q*(1+rr) + x(2)*(1+rnr) - (l_omega - 1)* theta)+pB/(l_omega * alpha^2 * y1 + x(1)*q*(1+rr) + x(2)*(1+rnr))-(1/((1+rnr)*(1/2)*(y1 - ((alpha^2 * y1)/(1+rA)) - x(1) - x(2))));
+
+% condition 1: x1+x2 = a1
+A = [1,1];
+b = pi_x2(i);
+% contition 2: x1,x2>=0
+lb = [0,0];
+ub = [10,10];
+X0 = [5,5];
+x = fmincon(fun,X0,A,b,[],[],lb,ub);
+priv_guiso_pi_arr(i) = x(1);
+% make share (we plot that later)
+priv_guiso_pi_arr_a1(i) = priv_guiso_pi_arr(i)/pi_x2(i);
+end
+
+% plot share
+figure1 = figure;
+axes1 = axes('Parent',figure1);
+hold(axes1,'on');
+plot(omega_grid, priv_guiso_pi_arr_a1,'k','LineWidth',2)
+ylabel('{\boldmath$\frac{ar_1^*}{a_1^*}$}','FontSize',17,'Interpreter','latex');
+xlabel('{\boldmath$\omega$}','FontSize',17,'Interpreter','latex');
+title('Share of Risky Liquid Assets for Different Trust');
+
+% plot risky and total assets (difference is save liquid: anr)
+figure1 = figure;
+axes1 = axes('Parent',figure1);
+hold(axes1,'on');
+plot(omega_grid, priv_guiso_pi_arr,'k','LineWidth',2)
+plot(omega_grid, pi_x2,'k','LineWidth',2)
+ylabel('{\boldmath$ar_1^*$ and \boldmath$a_1^*$}','FontSize',17,'Interpreter','latex');
+xlabel('{\boldmath$\omega$}','FontSize',17,'Interpreter','latex');
+title('Share of Risky Liquid Assets for Different Trust');
