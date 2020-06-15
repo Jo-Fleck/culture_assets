@@ -135,8 +135,7 @@ for i = 1:numel(omega_grid)
 end
 
 figure1 = figure;
-axes1 = axes('Parent',figure1);
-hold(axes1,'on');
+axes1 = axes('Parent',figure1);hold(axes1,'on');
 plot(omega_grid, priv_pi_x2,'k','LineWidth',2)
 plot(omega_grid, pi_x2,'k','LineWidth',2)
 ylabel('{\boldmath$a_1^*$}','FontSize',17,'Interpreter','latex');
@@ -176,7 +175,7 @@ for i = 1:numel(omega_grid)
     
     priv_pi_x = roots( [priv_pi_a priv_pi_b priv_pi_c] );
     priv_pi_x1(i) = priv_pi_x(1);
-    ppriv_i_x2(i) = priv_pi_x(2);
+    priv_pi_x2(i) = priv_pi_x(2);
     
 % Use fmincon
 % solve for arr =x1 and anr = x2 with the condition that both have to be positive and x1+x2=a1
