@@ -161,6 +161,8 @@ rnr = 0.02;
 omega_grid = 1.0001:0.0001:1/alpha;
 priv_guiso_pi_arr = nan(1,numel(omega_grid));
 priv_guiso_pi_arr_a1 = nan(1,numel(omega_grid));
+priv_pi_x1 = nan(1,numel(omega_grid));
+priv_pi_x2 = nan(1,numel(omega_grid));
 
 for i = 1:numel(omega_grid)
     l_omega = omega_grid(i);
