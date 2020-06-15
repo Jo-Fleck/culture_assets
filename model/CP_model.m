@@ -168,13 +168,15 @@ for i = 1:numel(omega_grid)
     q= 1/((1/alpha)-1)*(l_omega-1);
     
 % find solution for a1
-    pi_a = 3;
-    pi_b = y1*( ((5/2)*alpha*(1+l_omega*alpha))/(1+z_rA*rA) - (alpha^2)/(1+rA) - 1 );
-    pi_c = y1^2*(alpha/2)*(1/(1+z_rA*rA))*( (4*alpha^2*l_omega)/(1+z_rA*rA) - (alpha^2*(1+l_omega*alpha))/(1+rA) - (1+l_omega*alpha) );
+    priv_pi_a = 3;
+    priv_pi_b = y1*( ((5/2)*alpha*(1+l_omega*alpha - ((l_omega - 1)/y1)*theta))/(1+z_rA*rA) - (alpha^2)/(1+rA) - 1 );
+    priv_pi_c = y1^2*(alpha/2)*(1/(1+z_rA*rA))*( (4*(alpha^2*l_omega - (l_omega - 1)*(theta/y1)))/(1+z_rA*rA) - (alpha^2*(1+l_omega*alpha))/(1+rA) - (1+l_omega*alpha) - ((l_omega - 1)*theta / (y1*alpha)) - (alpha * theta * (l_omega - 1)/(y1*(1+rA))));
     
-    pi_x = roots( [pi_a pi_b pi_c] );
-    pi_x1(i) = pi_x(1);
-    pi_x2(i) = pi_x(2);
+    priv_pi_x = roots( [priv_pi_a priv_pi_b priv_pi_c] );
+    
+    priv_pi_x = roots( [priv_pi_a priv_pi_b priv_pi_c] );
+    priv_pi_x1(i) = priv_pi_x(1);
+    ppriv_i_x2(i) = priv_pi_x(2);
     
 % Use fmincon
 % solve for arr =x1 and anr = x2 with the condition that both have to be positive and x1+x2=a1
@@ -200,7 +202,7 @@ fun = @(x)pG/(alpha * y1 + x(1)*q*(1+rr) + x(2)*(1+rnr) - (l_omega - 1)* theta) 
 
 % condition 1: x1+x2 = a1
 A = [1,1];
-b = pi_x2(i);
+b = priv_pi_x2(i);
 % contition 2: x1,x2>=0
 lb = [0,0];
 ub = [10,10];
@@ -225,7 +227,7 @@ figure1 = figure;
 axes1 = axes('Parent',figure1);
 hold(axes1,'on');
 plot(omega_grid, priv_guiso_pi_arr,'k','LineWidth',2)
-plot(omega_grid, pi_x2,'k','LineWidth',2)
+plot(omega_grid, priv_pi_x2,'k','LineWidth',2)
 ylabel('{\boldmath$ar_1^*$ and \boldmath$a_1^*$}','FontSize',17,'Interpreter','latex');
 xlabel('{\boldmath$\omega$}','FontSize',17,'Interpreter','latex');
 title('Share of Risky Liquid Assets for Different Trust');
