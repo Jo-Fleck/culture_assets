@@ -210,7 +210,7 @@ X0 = [5,5];
 x = fmincon(fun,X0,A,b,[],[],lb,ub);
 priv_guiso_pi_arr(i) = x(1);
 % make share (we plot that later)
-priv_guiso_pi_arr_a1(i) = priv_guiso_pi_arr(i)/pi_x2(i);
+priv_guiso_pi_arr_a1(i) = priv_guiso_pi_arr(i)/priv_pi_x2(i);
 end
 
 % plot share
