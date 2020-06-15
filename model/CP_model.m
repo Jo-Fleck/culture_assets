@@ -36,9 +36,9 @@ U_det = log(c1_det)+log(c2_det)+log(c3_det);
 % Plot results
 t = 1:1:3;
 figure(1)
-plot(t,[y1,alpha*y1,alpha^2*y1],'-o','MarkerIndices',1:1:3,'MarkerSize',10,'LineWidth',2)
+plot(t,[y1,alpha*y1,alpha^2*y1],'k-o','MarkerIndices',1:1:3,'MarkerSize',10,'LineWidth',2)
 hold on
-plot(t,[c1_det, c2_det, c3_det],'-x','MarkerIndices',1:1:3,'MarkerSize',10,'LineWidth',2)
+plot(t,[c1_det, c2_det, c3_det],'k--x','MarkerIndices',1:1:3,'MarkerSize',10,'LineWidth',2)
 hold off
 title('Deterministic Environment')
 xlabel('Period','FontSize',14)
@@ -52,10 +52,10 @@ xticks([1 2 3])
 % Plot endowment evolution relative to deterministic case
 
 figure(2)
-plot(t,[y1,y2,y3],'-o','MarkerIndices',1:1:3,'MarkerSize',14,'LineWidth',2)
+plot(t,[y1,y2,y3],'ko','MarkerIndices',1:1:3,'MarkerSize',14,'LineWidth',2)
 hold on
-plot(t,[y1,yG,y3],'-*','MarkerIndices',1:1:3,'MarkerSize',10,'LineWidth',2)
-plot(t,[y1,yB,y3],'-*','MarkerIndices',1:1:3,'MarkerSize',10,'LineWidth',2)
+plot(t,[y1,yG,y3],'k--*','MarkerIndices',1:1:3,'MarkerSize',10,'LineWidth',2)
+plot(t,[y1,yB,y3],'k--x','MarkerIndices',1:1:3,'MarkerSize',10,'LineWidth',2)
 hold off
 title('Deterministic vs Stochastic Endowment')
 xlabel('Period','FontSize',14)
