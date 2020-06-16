@@ -134,23 +134,46 @@ for i = 1:numel(omega_grid)
     
 end
 
-figure1 = figure;
-axes1 = axes('Parent',figure1);hold(axes1,'on');
+% Optimal liquid asset for private trust
+figure2_v1 = figure;
+axes2_v1 = axes('Parent',figure2_v1);
+hold(axes2_v1,'on');
 plot(omega_grid, priv_pi_x2,'k','LineWidth',2)
-plot(omega_grid, pi_x2,'k','LineWidth',2)
 ylabel('{\boldmath$a_1^*$}','FontSize',17,'Interpreter','latex');
-xlabel('{\boldmath$\omega$}','FontSize',17,'Interpreter','latex');
-title('Stochastic Endowment: Optimal Liquid Asset Choice for Different Trust');
-
-box(axes1,'on');
-annotation(figure1,'arrow',[0.85 0.90],[0.30 0.13],'LineWidth',1);
-annotation(figure1,'arrow',[0.29 0.14],[0.82 0.88],'LineWidth',1);
-annotation(figure1,'textbox', [0.77 0.31 0.12 0.09], ...
+xlabel('{\boldmath$\widetilde{\omega}$}','FontSize',17,'Interpreter','latex');
+title('Stochastic Endowment: Optimal Liquid Asset Choice for Private Trust');
+box(axes2_v1,'on');
+annotation(figure2_v1,'arrow',[0.83 0.90],[0.71 0.88],'LineWidth',1);
+annotation(figure2_v1,'arrow',[0.18 0.14],[0.35 0.16],'LineWidth',1);
+annotation(figure2_v1,'textbox', [0.77 0.64 0.13 0.08], ...
 'String',{'Full','Insurance'},'LineStyle','none','FontSize',14,...
 'FontName','Helvetica Neue','FitBoxToText','off');
-annotation(figure1,'textbox',[0.30 0.78 0.11 0.07],...
+annotation(figure2_v1,'textbox',[0.17 0.38 0.13 0.08],...
 'String',{'No','Insurance'},'LineStyle','none','FontSize',14,...
 'FontName','Helvetica Neue','FitBoxToText','off');
+
+% Optimal liquid asset for private and public trust
+figure2_v2 = figure;
+axes2_v2 = axes('Parent',figure2_v2);
+hold(axes2_v2,'on');
+plot(omega_grid, priv_pi_x2,'-k','LineWidth',2)
+plot(omega_grid, pi_x2,'--k','LineWidth',2)
+ylabel('{\boldmath$a_1^*$}','FontSize',17,'Interpreter','latex');
+xlabel('{\boldmath$\overline{\omega}$}, {\boldmath$\widetilde{\omega}$}','FontSize',17,'Interpreter','latex');
+title('Stochastic Endowment: Optimal Liquid Asset Choice');
+legend({'Private Trust ({\boldmath$\widetilde{\omega}$})','Public Trust ({\boldmath$\overline{\omega}$})'},'Location','northwest','FontSize',12,'Interpreter','latex')
+legend('boxoff')
+
+annotation(figure2_v2,'arrow',[0.79 0.91],[0.46 0.12]);
+annotation(figure2_v2,'arrow',[0.79 0.9],[0.62 0.89]);
+annotation(figure2_v2,'arrow',[0.20 0.14],[0.28 0.44]);
+annotation(figure2_v2,'textbox', [0.71 0.51 0.12 0.07], ...
+'String',{'Full','Insurance'},'LineStyle','none','FontSize',14,...
+'FontName','Helvetica Neue','FitBoxToText','off');
+annotation(figure2_v2,'textbox',[0.18 0.19 0.12 0.07],...
+'String',{'No','Insurance'},'LineStyle','none','FontSize',14,...
+'FontName','Helvetica Neue','FitBoxToText','off');
+
 
 %% Guiso Model
 % set interest rates for rr,rnr
