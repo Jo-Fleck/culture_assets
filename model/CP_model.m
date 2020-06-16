@@ -156,12 +156,12 @@ annotation(figure2_v1,'textbox',[0.17 0.38 0.13 0.08],...
 figure2_v2 = figure;
 axes2_v2 = axes('Parent',figure2_v2);
 hold(axes2_v2,'on');
-plot(omega_grid, priv_pi_x2,'-k','LineWidth',2)
-plot(omega_grid, pi_x2,'--k','LineWidth',2)
+plot(omega_grid, pi_x2,'-k','LineWidth',2)
+plot(omega_grid, priv_pi_x2,'--k','LineWidth',2)
 ylabel('{\boldmath$a_1^*$}','FontSize',17,'Interpreter','latex');
 xlabel('{\boldmath$\overline{\omega}$}, {\boldmath$\widetilde{\omega}$}','FontSize',17,'Interpreter','latex');
 title('Stochastic Endowment: Optimal Liquid Asset Choice');
-legend({'Private Trust ({\boldmath$\widetilde{\omega}$})','Public Trust ({\boldmath$\overline{\omega}$})'},'Location','northwest','FontSize',12,'Interpreter','latex')
+legend({'Public Trust ({\boldmath$\overline{\omega}$})','Private Trust ({\boldmath$\widetilde{\omega}$})'},'Location','northwest','FontSize',12,'Interpreter','latex')
 legend('boxoff')
 
 annotation(figure2_v2,'arrow',[0.79 0.91],[0.46 0.12]);
