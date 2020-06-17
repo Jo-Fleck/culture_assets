@@ -238,20 +238,23 @@ priv_guiso_pi_arr_a1(i) = priv_guiso_pi_arr(i)/priv_pi_x2(i);
 end
 
 % plot share
-figure1 = figure;
-axes1 = axes('Parent',figure1);
-hold(axes1,'on');
+figure3_v1 = figure;
+axes3_v1 = axes('Parent',figure3_v1);
+hold(axes3_v1,'on');
 plot(omega_grid, priv_guiso_pi_arr_a1,'k','LineWidth',2)
 ylabel('{\boldmath$\frac{ar_1^*}{a_1^*}$}','FontSize',17,'Interpreter','latex');
 xlabel('{\boldmath$\omega$}','FontSize',17,'Interpreter','latex');
 title('Share of Risky Liquid Assets for Different Trust');
 
 % plot risky and total assets (difference is save liquid: anr)
-figure1 = figure;
-axes1 = axes('Parent',figure1);
-hold(axes1,'on');
-plot(omega_grid, priv_guiso_pi_arr,'k','LineWidth',2)
+figure3_v2 = figure;
+axes3_v2 = axes('Parent',figure3_v2);
+hold(axes3_v2,'on');
 plot(omega_grid, priv_pi_x2,'k','LineWidth',2)
-ylabel('{\boldmath$ar_1^*$ and \boldmath$a_1^*$}','FontSize',17,'Interpreter','latex');
+plot(omega_grid, priv_guiso_pi_arr,'--k','LineWidth',2)
+ylabel('{\boldmath$a_1^*$, \boldmath$a_1^{r*}$}','FontSize',17,'Interpreter','latex');
 xlabel('{\boldmath$\omega$}','FontSize',17,'Interpreter','latex');
-title('Share of Risky Liquid Assets for Different Trust');
+title('Optimal Liquid Asset Choice for Different Trust');
+legend({'\boldmath$a_1^*$: Total Liquid Assets (Risky + Safe)','\boldmath$a_1^{r*}$: Risky Liquid Asset'},'Location','northwest','FontSize',12,'Interpreter','latex')
+legend('boxoff')
+
