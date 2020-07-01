@@ -78,6 +78,8 @@ fi_x = roots( [fi_a fi_b fi_c] )
 omega_grid = 1:0.0001:1/alpha;
 pi_x1 = nan(1,numel(omega_grid));
 pi_x2 = nan(1,numel(omega_grid));
+pi_A = nan(1,numel(omega_grid));
+pi_U = nan(1,numel(omega_grid));
 
 for i = 1:numel(omega_grid)
     l_omega = omega_grid(i);
@@ -89,7 +91,16 @@ for i = 1:numel(omega_grid)
     pi_x = roots( [pi_a pi_b pi_c] );
     pi_x1(i) = pi_x(1);
     pi_x2(i) = pi_x(2);
+
+% A* public
+    pi_A(i) = (1/2)*(y1*(1-(alpha^2/(1+rA))) - pi_x2(i));
     
+% Utility
+    c1_pub = y1 - pi_A(i) - pi_x2(i);
+    c2_pub_good = alpha*y1 + pi_x2(i)*(1+z_rA*rA);
+    c2_pub_bad = alpha^2 * y1* l_omega + pi_x2(i)*(1+z_rA*rA);  
+    c3_pub = alpha^2*y1 + pi_A(i)*(1+rA);
+    pi_U(i) = log(c1_pub)+log(pG*c2_pub_good + pB*c2_pub_bad)+log(c3_pub);
 end
 
 figure1 = figure;
@@ -120,6 +131,8 @@ theta = y1 * alpha^2
 omega_grid = 1:0.0001:1/alpha;
 priv_pi_x1 = nan(1,numel(omega_grid));
 priv_pi_x2 = nan(1,numel(omega_grid));
+priv_pi_A = nan(1,numel(omega_grid));
+priv_pi_U = nan(1,numel(omega_grid));
 
 for i = 1:numel(omega_grid)
     l_omega = omega_grid(i);
@@ -131,7 +144,15 @@ for i = 1:numel(omega_grid)
     priv_pi_x = roots( [priv_pi_a priv_pi_b priv_pi_c] );
     priv_pi_x1(i) = priv_pi_x(1);
     priv_pi_x2(i) = priv_pi_x(2);
-    
+
+% A* private
+    priv_pi_A(i) = (1/2)*(y1*(1-(alpha^2/(1+rA))) - priv_pi_x2(i));
+% Utility
+    c1_priv = y1 - priv_pi_A(i) - priv_pi_x2(i);
+    c2_priv_good = alpha*y1 + priv_pi_x2(i)*(1+z_rA*rA) - ((l_omega - 1)*theta);
+    c2_priv_bad = alpha^2 * y1* l_omega +priv_pi_x2(i)*(1+z_rA*rA);  
+    c3_priv = alpha^2*y1 + pi_A(i)*(1+rA);
+    priv_pi_U(i) = log(c1_priv)+log(pG*c2_priv_good + pB*c2_priv_bad)+log(c3_priv);
 end
 
 % Optimal liquid asset for private trust
@@ -174,6 +195,31 @@ annotation(figure2_v2,'textbox',[0.18 0.19 0.12 0.07],...
 'String',{'No','Insurance'},'LineStyle','none','FontSize',14,...
 'FontName','Helvetica Neue','FitBoxToText','off');
 
+% Optimal liquid asset for private and public trust + Utilities
+figure2_v3 = figure;
+axes2_v3 = axes('Parent',figure2_v3);
+hold(axes2_v3,'on');
+plot(omega_grid, pi_x2,'-k','LineWidth',2)
+plot(omega_grid, priv_pi_x2,'--k','LineWidth',2)
+ylabel('{\boldmath$a_1^*$}','FontSize',17,'Interpreter','latex');
+yyaxis right
+plot(omega_grid, priv_pi_U,':k','LineWidth',2)
+plot(omega_grid, pi_U,':k','LineWidth',2)
+ylabel('{\boldmath$U$}','FontSize',17,'Interpreter','latex');
+xlabel('{\boldmath$\overline{\omega}$}, {\boldmath$\widetilde{\omega}$}','FontSize',17,'Interpreter','latex');
+title('Stochastic Endowment: Optimal Liquid Asset Choice');
+legend({'Public Trust ({\boldmath$\overline{\omega}$})','Private Trust ({\boldmath$\widetilde{\omega}$})'},'Location','northwest','FontSize',12,'Interpreter','latex')
+legend('boxoff')
+
+annotation(figure2_v3,'arrow',[0.79 0.91],[0.46 0.12]);
+annotation(figure2_v3,'arrow',[0.79 0.9],[0.62 0.89]);
+annotation(figure2_v3,'arrow',[0.20 0.14],[0.28 0.44]);
+annotation(figure2_v3,'textbox', [0.71 0.51 0.12 0.07], ...
+'String',{'Full','Insurance'},'LineStyle','none','FontSize',14,...
+'FontName','Helvetica Neue','FitBoxToText','off');
+annotation(figure2_v3,'textbox',[0.18 0.19 0.12 0.07],...
+'String',{'No','Insurance'},'LineStyle','none','FontSize',14,...
+'FontName','Helvetica Neue','FitBoxToText','off');
 
 %% Guiso Model
 % set interest rates for rr,rnr
