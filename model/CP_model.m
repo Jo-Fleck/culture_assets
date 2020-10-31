@@ -98,7 +98,7 @@ hold(axes1,'on');
 plot(omega_grid, pi_x2,'k','LineWidth',2)
 ylabel('{\boldmath$a_1^*$}','FontSize',17,'Interpreter','latex');
 xlabel('{\boldmath$\omega$}','FontSize',17,'Interpreter','latex');
-title('Stochastic Endowment: Optimal Liquid Asset Choice for Beliefs in Social Insurance');
+title('Optimal Liquid Asset Choice for Different Beliefs in Social Insurance');
 
 box(axes1,'on');
 annotation(figure1,'arrow',[0.85 0.90],[0.30 0.13],'LineWidth',1);
@@ -139,7 +139,7 @@ hold(axes2_v1,'on');
 plot(omega_grid, priv_pi_x2,'k','LineWidth',2)
 ylabel('{\boldmath$a_1^*$}','FontSize',17,'Interpreter','latex');
 xlabel('{\boldmath$\widetilde{\omega}$}','FontSize',17,'Interpreter','latex');
-title('Stochastic Endowment: Optimal Liquid Asset Choice for Beliefs in Communal Insurance');
+title('Optimal Liquid Asset Choice for Different Beliefs in Communal Insurance');
 box(axes2_v1,'on');
 annotation(figure2_v1,'arrow',[0.83 0.90],[0.71 0.88],'LineWidth',1);
 annotation(figure2_v1,'arrow',[0.18 0.14],[0.35 0.16],'LineWidth',1);
@@ -158,7 +158,7 @@ plot(omega_grid, pi_x2,'-k','LineWidth',2)
 plot(omega_grid, priv_pi_x2,'--k','LineWidth',2)
 ylabel('{\boldmath$a_1^*$}','FontSize',17,'Interpreter','latex');
 xlabel('{\boldmath$\overline{\omega}$}, {\boldmath$\widetilde{\omega}$}','FontSize',17,'Interpreter','latex');
-title('Stochastic Endowment: Optimal Liquid Asset Choice for Beliefs in Social and Communal Insurance');
+title('Optimal Liquid Asset Choice for Different Beliefs in Social and Communal Insurance');
 legend({'Belief in Social Insurance ({\boldmath$\overline{\omega}$})','Belief in Communal Insurance ({\boldmath$\widetilde{\omega}$})'},'Location','northwest','FontSize',12,'Interpreter','latex')
 legend('boxoff')
 
