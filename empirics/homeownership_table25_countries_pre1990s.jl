@@ -4,10 +4,11 @@
 
 ## Open Ends
 
-# Explore if NFAMS > 1 makes a difference...
+# What about countries not organized into households? Chile 1960, Germany 1970, Mexico 1960, Netherlands 1960, 1971, Pakistan 1981, Spain 1981
 # Consider computing decade averages
-# How to get more countries/years efficiently? (IPUMS does not yet have API!)
 
+# Done:
+# Germany - West: 1970, 1987; East: 1971, 1981
 
 ## Housekeeping
 
@@ -25,8 +26,30 @@ country_dic = Dict(df_country_info.COUNTRYCODE .=> df_country_info.COUNTRYNAME);
 ## Import and prepate data
 
 file_data = "/Users/main/Downloads/ipumsi_00004.csv";
-df = CSV.read(file_data, DataFrame);
-select!(df, Not([:GQ, :REGIONW, :SAMPLE, :OWNERSHIPD, :PERSONS, :PERWT, :URBAN, :RESIDENT, :BEDROOMS, :ROOMS])); # Drop redundant variables
+df_in = CSV.read(file_data, DataFrame);
+df = select!(df_in, Not([:GQ, :REGIONW, :SAMPLE, :OWNERSHIPD, :PERSONS, :PERWT, :URBAN, :RESIDENT, :BEDROOMS, :ROOMS])); # Drop redundant variables
+
+# Change country codes to names
+insertcols!(df, 1, :COUNTRYNAME => map(x -> country_dic[x], df[!, :COUNTRY]));
+select!(df, Not(:COUNTRY));
+
+# Assign East and West to Germany
+for i = 1:size(df,1)
+    if df.COUNTRYNAME[i] == "Germany" && ( df.YEAR[i] == 1970 || df.YEAR[i] == 1987) df.COUNTRYNAME[i] = "Germany West" end
+    if df.COUNTRYNAME[i] == "Germany" && ( df.YEAR[i] == 1971 || df.YEAR[i] == 1981) df.COUNTRYNAME[i] = "Germany East" end
+end
+
+# Print sample countries/years to the console
+gdf_countries_sample = groupby(df, [:COUNTRYNAME, :YEAR]);
+df_countries_sample = combine(gdf_countries_sample, :COUNTRYNAME => unique => :countryname, :YEAR => unique => :year);
+select!(df_countries_sample, [:COUNTRYNAME, :YEAR]);
+
+println("");
+printstyled("Sample: countries and years\n"; bold = true, color = :green);
+println("");
+print(df_countries_sample);
+println("");
+println("");
 
 
 ## Compute homeownership rate
@@ -36,24 +59,33 @@ filter!(row -> row.PERNUM == 1, df);
 select!(df, Not(:PERNUM));
 
 # Keep only informative OWNERSHIP values
-# 0	NIU (not in universe)
-# 1	Owned
-# 2	Not owned
-# 9	Unknown
+# 0: NIU (not in universe); 1 Owned; 2 Not owned; 9 Unknown
 dropmissing!(df, :OWNERSHIP);
 filter!(row -> (row.OWNERSHIP == 1 || row.OWNERSHIP == 2), df);
 replace!(df.OWNERSHIP, 2=>0); # change renters to 0 so mean is homeownership rate
 
-gdf = groupby(df, [:COUNTRY, :YEAR]);
-df_main = combine(gdf, nrow => :observations, :OWNERSHIP => ( p -> ( b = round(mean(p),digits=2) )) => :ownership_rate, [:OWNERSHIP, :HHWT] => ((o, w) -> ( a = round(mean(o, weights(w)), digits=2) )) => :ownership_rate_weighted);
-insertcols!(df_main, 1, :COUNTRYNAME => map(x -> country_dic[x], df_main[!, :COUNTRY]));
-select!(df_main, Not(:COUNTRY));
+gdf_result = groupby(df, [:COUNTRYNAME, :YEAR]);
+df_result = combine(gdf_result, nrow => :observations, :OWNERSHIP => ( p -> ( b = round(mean(p),digits=2) )) => :ownership_rate, [:OWNERSHIP, :HHWT] => ((o, w) -> ( a = round(mean(o, weights(w)), digits=2) )) => :ownership_rate_weighted);
 
-df_ownership_rate = unstack(df_main, :COUNTRYNAME, :YEAR, :ownership_rate);
-df_ownership_rate_weighted = unstack(df_main, :COUNTRYNAME, :YEAR, :ownership_rate_weighted);
-df_ownership_rate_observations = unstack(df_main, :COUNTRYNAME, :YEAR, :observations);
+# Print result countries/years to the console
+println("");
+printstyled("Results: countries and years\n"; bold = true, color = :red);
+println("");
+print(select(df_result,[:COUNTRYNAME, :YEAR]));
+println("");
+println("");
 
-CSV.write(dir_out * "table25_countries_pre_1990_homeownership_rate.csv", df_main);
+df_ownership_rate = unstack(df_result, :COUNTRYNAME, :YEAR, :ownership_rate);
+df_ownership_rate_weighted = unstack(df_result, :COUNTRYNAME, :YEAR, :ownership_rate_weighted);
+df_ownership_rate_observations = unstack(df_result, :COUNTRYNAME, :YEAR, :observations);
+
+# Save
+CSV.write(dir_out * "table25_countries_pre_1990_homeownership_rate.csv", df_result);
 CSV.write(dir_out * "table25_countries_pre_1990_homeownership_rate_long.csv", df_ownership_rate);
 CSV.write(dir_out * "table25_countries_pre_1990_homeownership_rate_weighted_long.csv", df_ownership_rate_weighted);
 CSV.write(dir_out * "table25_countries_pre_1990_homeownership_rate_observations_long.csv", df_ownership_rate_observations);
+
+
+## Diagnostics
+
+df_missing_countries_years = antijoin(df_countries_sample, df_result, on = [:COUNTRYNAME, :YEAR])
