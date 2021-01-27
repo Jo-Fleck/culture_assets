@@ -64,7 +64,7 @@ legend('Deterministic','Good State','Bad State','FontSize',12)
 xticks([1 2 3])
 
 
-%% Public Trust
+%% Social Insurance
 
 % 1. Full insurance: omega = 1/alpha (qe coefficients as written in tex file)
 
@@ -98,7 +98,7 @@ hold(axes1,'on');
 plot(omega_grid, pi_x2,'k','LineWidth',2)
 ylabel('{\boldmath$a_1^*$}','FontSize',17,'Interpreter','latex');
 xlabel('{\boldmath$\omega$}','FontSize',17,'Interpreter','latex');
-title('Stochastic Endowment: Optimal Liquid Asset Choice for Different Trust');
+title('Optimal Liquid Asset Choice for Different Beliefs in Social Insurance');
 
 box(axes1,'on');
 annotation(figure1,'arrow',[0.85 0.90],[0.30 0.13],'LineWidth',1);
@@ -111,11 +111,9 @@ annotation(figure1,'textbox',[0.30 0.78 0.11 0.07],...
 'FontName','Helvetica Neue','FitBoxToText','off');
 
 
-%% Private Trust
+%% Communal Insurance
 
-%theta = 4.4;
 theta = y1 * alpha^2
-% Iterate over omega: 1:0.001:1/alpha
 
 omega_grid = 1:0.0001:1/alpha;
 priv_pi_x1 = nan(1,numel(omega_grid));
@@ -134,14 +132,14 @@ for i = 1:numel(omega_grid)
     
 end
 
-% Optimal liquid asset for private trust
+% Optimal liquid asset for communal insurance
 figure2_v1 = figure;
 axes2_v1 = axes('Parent',figure2_v1);
 hold(axes2_v1,'on');
 plot(omega_grid, priv_pi_x2,'k','LineWidth',2)
 ylabel('{\boldmath$a_1^*$}','FontSize',17,'Interpreter','latex');
 xlabel('{\boldmath$\widetilde{\omega}$}','FontSize',17,'Interpreter','latex');
-title('Stochastic Endowment: Optimal Liquid Asset Choice for Private Trust');
+title('Optimal Liquid Asset Choice for Different Beliefs in Communal Insurance');
 box(axes2_v1,'on');
 annotation(figure2_v1,'arrow',[0.83 0.90],[0.71 0.88],'LineWidth',1);
 annotation(figure2_v1,'arrow',[0.18 0.14],[0.35 0.16],'LineWidth',1);
@@ -152,7 +150,7 @@ annotation(figure2_v1,'textbox',[0.17 0.38 0.13 0.08],...
 'String',{'No','Insurance'},'LineStyle','none','FontSize',14,...
 'FontName','Helvetica Neue','FitBoxToText','off');
 
-% Optimal liquid asset for private and public trust
+% Optimal liquid asset for beliefs in social and communal insurance
 figure2_v2 = figure;
 axes2_v2 = axes('Parent',figure2_v2);
 hold(axes2_v2,'on');
@@ -160,8 +158,8 @@ plot(omega_grid, pi_x2,'-k','LineWidth',2)
 plot(omega_grid, priv_pi_x2,'--k','LineWidth',2)
 ylabel('{\boldmath$a_1^*$}','FontSize',17,'Interpreter','latex');
 xlabel('{\boldmath$\overline{\omega}$}, {\boldmath$\widetilde{\omega}$}','FontSize',17,'Interpreter','latex');
-title('Stochastic Endowment: Optimal Liquid Asset Choice');
-legend({'Public Trust ({\boldmath$\overline{\omega}$})','Private Trust ({\boldmath$\widetilde{\omega}$})'},'Location','northwest','FontSize',12,'Interpreter','latex')
+title('Optimal Liquid Asset Choice for Different Beliefs in Social and Communal Insurance');
+legend({'Belief in Social Insurance ({\boldmath$\overline{\omega}$})','Belief in Communal Insurance ({\boldmath$\widetilde{\omega}$})'},'Location','northwest','FontSize',12,'Interpreter','latex')
 legend('boxoff')
 
 annotation(figure2_v2,'arrow',[0.79 0.91],[0.46 0.12]);
@@ -244,7 +242,7 @@ hold(axes1,'on');
 plot(omega_grid, priv_guiso_pi_arr_a1,'k','LineWidth',2)
 ylabel('{\boldmath$\frac{ar_1^*}{a_1^*}$}','FontSize',17,'Interpreter','latex');
 xlabel('{\boldmath$\omega$}','FontSize',17,'Interpreter','latex');
-title('Share of Risky Liquid Assets for Different Trust');
+title('Share of Risky Liquid Assets for Different Beliefs in Communal Insurance');
 
 % plot risky and total assets (difference is save liquid: anr)
 figure1 = figure;
@@ -254,4 +252,4 @@ plot(omega_grid, priv_guiso_pi_arr,'k','LineWidth',2)
 plot(omega_grid, priv_pi_x2,'k','LineWidth',2)
 ylabel('{\boldmath$ar_1^*$ and \boldmath$a_1^*$}','FontSize',17,'Interpreter','latex');
 xlabel('{\boldmath$\omega$}','FontSize',17,'Interpreter','latex');
-title('Share of Risky Liquid Assets for Different Trust');
+title('Share of Risky Liquid Assets for Different Beliefs in Communal Insurance');
