@@ -29,7 +29,7 @@ country_dic = Dict(df_country_info.COUNTRYCODE .=> df_country_info.COUNTRYNAME);
 ## Import and prepate data
 
 df0 = CSV.read(file_data, DataFrame);
-select!(df0, [:COUNTRY, :YEAR, :PERNUM, :OWNERSHIP]); # Keep only relevant variables
+select!(df0, [:COUNTRY, :YEAR, :PERNUM, :OWNERSHIP, :HHWT]); # Keep only relevant variables
 
 # Change country codes to names
 insertcols!(df0, 1, :COUNTRYNAME => map(x -> country_dic[x], df0[!, :COUNTRY]));
