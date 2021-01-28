@@ -16,7 +16,7 @@ using CSV, DataFrames, StatsBase, Statistics
 using Plots, Plots.PlotMeasures, StatsPlots; gr()
 
 period = "pre_1990";
-file_data = "/Users/main/Downloads/ipumsi_00004.csv";
+file_data = "/Users/main/Downloads/ipumsi_00008.csv";
 
 dir_out = "/Users/main/Documents/Dropbox/Research/Culture_Assets/homeownership_rates/";
 
