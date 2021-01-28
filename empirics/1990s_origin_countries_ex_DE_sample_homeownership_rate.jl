@@ -1,5 +1,5 @@
 
-### Pre 1990 homeownership rates for origin countries excluding those in DE sample
+### 1990s homeownership rates for origin countries excluding those in DE sample
 
 
 ## Open Ends
@@ -16,7 +16,7 @@ using CSV, DataFrames, StatsBase, Statistics
 using Plots, Plots.PlotMeasures, StatsPlots; gr()
 
 period = "1990s";
-file_data = " ";
+file_data = "/Users/main/OneDrive - Istituto Universitario Europeo/data/IPUMS_international/ipumsi_00012.csv";
 
 dir_out = "/Users/main/Documents/Dropbox/Research/Culture_Assets/homeownership_rates/";
 
