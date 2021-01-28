@@ -16,7 +16,7 @@ using CSV, DataFrames, StatsBase, Statistics
 using Plots, Plots.PlotMeasures, StatsPlots; gr()
 
 period = "2000s";
-file_data = "/Users/main/Downloads/ipumsi_00004.csv";
+file_data = " ";
 
 dir_out = "/Users/main/Documents/Dropbox/Research/Culture_Assets/homeownership_rates/";
 
@@ -26,22 +26,20 @@ df_country_info = CSV.read(file_country_info, DataFrame;  types=[Int64, String])
 country_dic = Dict(df_country_info.COUNTRYCODE .=> df_country_info.COUNTRYNAME); # Generate country dictionary
 
 
-## Import and prepate data
+## Import and prepare data
 
-df0 = CSV.read(file_data, DataFrame);
-select!(df0, [:COUNTRY, :YEAR, :PERNUM, :OWNERSHIP, :HHWT]); # Keep only relevant variables
+df = CSV.read(file_data, DataFrame);
+select!(df, [:COUNTRY, :YEAR, :PERNUM, :OWNERSHIP, :HHWT]); # Keep only relevant variables
 
 # Change country codes to names
-insertcols!(df0, 1, :COUNTRYNAME => map(x -> country_dic[x], df0[!, :COUNTRY]));
-select!(df0, Not(:COUNTRY));
+insertcols!(df, 1, :COUNTRYNAME => map(x -> country_dic[x], df[!, :COUNTRY]));
+select!(df, Not(:COUNTRY));
 
 # Assign East and West to Germany
-for i = 1:size(df0,1)
-    if df0.COUNTRYNAME[i] == "Germany" && ( df0.YEAR[i] == 1970 || df0.YEAR[i] == 1987) df0.COUNTRYNAME[i] = "Germany West" end
-    if df0.COUNTRYNAME[i] == "Germany" && ( df0.YEAR[i] == 1971 || df0.YEAR[i] == 1981) df0.COUNTRYNAME[i] = "Germany East" end
+for i = 1:size(df,1)
+    if df.COUNTRYNAME[i] == "Germany" && ( df.YEAR[i] == 1970 || df.YEAR[i] == 1987) df.COUNTRYNAME[i] = "Germany West" end
+    if df.COUNTRYNAME[i] == "Germany" && ( df.YEAR[i] == 1971 || df.YEAR[i] == 1981) df.COUNTRYNAME[i] = "Germany East" end
 end
-
-df = deepcopy(df0);
 
 # Print sample countries/years to the console
 gdf_countries_sample = groupby(df, [:COUNTRYNAME, :YEAR]);
@@ -62,30 +60,23 @@ println("");
 filter!(row -> row.PERNUM == 1, df);
 select!(df, Not(:PERNUM));
 
-# Keep only informative OWNERSHIP values
-# 0: NIU (not in universe); 1 Owned; 2 Not owned; 9 Unknown
-dropmissing!(df, :OWNERSHIP);
-filter!(row -> (row.OWNERSHIP == 1 || row.OWNERSHIP == 2), df);
-replace!(df.OWNERSHIP, 2=>0); # change renters to 0 so mean is homeownership rate
+# Keep only informative OWNERSHIP values: 0 NIU (not in universe); 1 Owned; 2 Not owned; 9 Unknown
+df[!, :OWNERSHIP_adj] = coalesce.(df.OWNERSHIP, 99); # change missing to 99
+select!(df, Not(:OWNERSHIP));
+filter!(row -> (row.OWNERSHIP_adj == 1 || row.OWNERSHIP_adj == 2 || row.OWNERSHIP_adj == 99), df);
+replace!(df.OWNERSHIP_adj, 2=>0); # change renters to 0 so mean is homeownership rate
 
-gdf_result = groupby(df, [:COUNTRYNAME, :YEAR]);
-df_result = combine(gdf_result, nrow => :observations, :OWNERSHIP => ( p -> ( b = round(mean(p),digits=2) )) => :ownership_rate, [:OWNERSHIP, :HHWT] => ((o, w) -> ( a = round(mean(o, weights(w)), digits=2) )) => :ownership_rate_weighted);
+gdf_result_all = groupby(df, [:COUNTRYNAME, :YEAR]);
+df_result_all = combine(gdf_result_all, nrow => :observations, :OWNERSHIP_adj => ( p -> ( b = round(mean(p),digits=2) )) => :ownership_rate, [:OWNERSHIP_adj, :HHWT] => ((o, w) -> ( a = round(mean(o, weights(w)), digits=2) )) => :ownership_rate_weighted);
+df_result = filter(row -> row.ownership_rate != 99.0, df_result_all);
 
 
 ## Diagnostics on missing countries
 
-df_missing_countries = antijoin(df_countries_sample, df_result, on = [:COUNTRYNAME, :YEAR]);
-
+df_missing_countries = filter(row -> row.ownership_rate == 99.0, df_result_all);
 println("");
 for i = 1:size(df_missing_countries,1)
-    df_tmp = filter(row -> (row.COUNTRYNAME == df_missing_countries.COUNTRYNAME[i] && row.YEAR == df_missing_countries.YEAR[i]), df0); # -> OWNERSHIP is missing
-    ownership_missings = sum(ismissing.(df_tmp.OWNERSHIP))
-    obs = size(df_tmp,1)
-    if ownership_missings == obs
-        printstyled(df_missing_countries.COUNTRYNAME[i] * " (" * string(df_missing_countries.YEAR[i]) * ")  -> no homeownership data\n"; bold = true, color = :red)
-    else
-        printstyled(df_missing_countries.COUNTRYNAME[i] * " (" * string(df_missing_countries.YEAR[i]) * ") has homeownership data but something is wrong\n"; bold = true, color = :blue)
-    end
+    printstyled(df_missing_countries.COUNTRYNAME[i] * " (" * string(df_missing_countries.YEAR[i]) * ")  -> no homeownership data\n"; bold = true, color = :red)
 end
 
 # Print result countries/years to the console
